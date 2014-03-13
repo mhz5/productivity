@@ -1,13 +1,20 @@
 $(document).ready(function() {
-	var startTime;
-	var timeoutID;
+	var workStart, lazyStart;		// Start times for timers.
+	var timeDiff = 0.0;					// Time to display (difference between now and start)
+	var workTimeout, lazyTimeout;	// timeout function IDs
 
-	$('#start').click(function() {
-		start();
+	var storage = chrome.storage.local;
+
+	storage.set({work:0.0, lazy:0.0}, function() {});
+
+	$('#work').click(function() {
+		end('lazy');
+		start('work');
 	});
 
-	$('#end').click(function() {
-		end();
+	$('#lazy').click(function() {
+		end('work');
+		start('lazy');
 	});
 
 	$('#reset').click(function() {
@@ -15,31 +22,64 @@ $(document).ready(function() {
 	});
 
 	
-	function start() {
-		console.log('start');
+	function start(timer) {
+		console.log('start ' + timer);
 		startTime = new Date().getTime();
-		incTimer();
+		incTimer(timer);
 	}
 
-	function end() {
-		console.log('end');
-		clearTimeout(timeoutID);	// Stop timer
+	function end(timer) {
+		console.log('end ' + timer);
+
+		if (timer === 'work') {
+			storage.set({work: timeDiff}, function() {
+			});
+			clearTimeout(workTimeout);
+		}
+		else {
+			storage.set({lazy: timeDiff}, function() {
+			});
+			clearTimeout(lazyTimeout);
+		}
+
 	}
 	function reset() {
+		
 		console.log('reset');
-		startTime = null;
-		clearTimeout(timeoutID);	// Stop timer
+		workStart = null;
+		lazyStart = null;
+		clearTimeout(workTimeout);
+		clearTimeout(lazyTimeout);
+		$('#work-timer').html("0.00");
+		$('#lazy-timer').html("0.00");
+		storage.set({work:0.0, lazy:0.0}, function() {});
+
 	}
 
-	function incTimer() {
-		timeoutID = window.setTimeout(function() {
-			var timeDiff = new Date().getTime() - startTime;	// time difference
-			console.log(time);
-			var elapsed = Math.floor(timeDiff / 10) / 100;	// Formatting
-			$('#work-timer').html(elapsed);
+// RETRIEVE PREVIOUS TIME FROM THE DIV!!!
+
+function incTimer(timer) {
+	var timeoutID = window.setTimeout(function() {
+			storage.get(timer, function(item) {
+				if (timer === 'work')
+					timeDiff = new Date().getTime() - startTime + item.work;
+				else
+					timeDiff = new Date().getTime() - startTime + item.lazy;
+			});
 			
-			incTimer();	// Recursively call function to continue timing.
+			console.log(timeDiff);
+			
+			var elapsed = Math.floor(timeDiff / 10) / 100;	// Formatting
+			$('#' + timer + '-timer').html(elapsed);
+			
+			incTimer(timer);	// Recursively call function to continue timing.
 
 		}, 10);
-	}
+
+	if (timer === 'work')
+		workTimeout = timeoutID;
+	else
+		lazyTimeout = timeoutID;
+
+}
 });

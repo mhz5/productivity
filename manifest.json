@@ -2,12 +2,14 @@
 	"manifest_version": 2,
 	"name": "Productivity",
 	"version": "1.0",
-
-	"description": "Keep track of how many hours of productivity you have during the day.",
+	"permissions": [
+		"storage"
+		],
+	"description": "Keep track of daily productivity.",
 	"icons": {},
 
 	"browser_action": {
-		
+		// "default_popup": "popup.html"
 		},
 	"author": "Michael Zhao",
 	"background": {
