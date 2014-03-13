@@ -6,11 +6,12 @@
 	"description": "Keep track of how many hours of productivity you have during the day.",
 	"icons": {},
 
-	"browser_action": {},
+	"browser_action": {
+		
+		},
 	"author": "Michael Zhao",
 	"background": {
-		"scripts": ["background.js"],
-		"persistent": false
+		"scripts": ["js/background.js"]
 	}
 
 }
