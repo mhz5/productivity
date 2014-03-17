@@ -23,6 +23,7 @@ $(document).ready(function() {
 
 	
 	function start(timer) {
+		$('#work-ratio').css('width', '30%');
 		console.log('start ' + timer);
 		startTime = new Date().getTime();
 		incTimer(timer);

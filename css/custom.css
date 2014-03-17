@@ -1,3 +1,16 @@
 body {
 	background: #3AA;
 }
+
+#work-ratio {
+	background: green;
+}
+
+#lazy-ratio {
+	background: red;
+}
+
+.ratio {
+	display: inline-block;
+	width: 40%;
+}
